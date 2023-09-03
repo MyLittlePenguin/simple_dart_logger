@@ -4,9 +4,9 @@ final class MultiLogger extends Logger {
   final Iterable<Logger> _loggers;
 
   MultiLogger({
-    required Iterable<Logger> loggers,
-    super.logLvl,
     required super.className,
+    super.logLvl,
+    required Iterable<Logger> loggers,
   }): _loggers = loggers;
 
   @override

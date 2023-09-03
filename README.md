@@ -1,16 +1,3 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
 This package aims at providing a simple abstract Logger that can be easily
 extended by the user of the Package. It comes with few Logger implementations
 that will probably take care of most common logging needs, like logging to a file,
@@ -53,15 +40,95 @@ class SomeClass {
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+To use this logger you need to create a builder function that instantiates a concrete Logger.
+__This builder function has to be defined only once.__ It will be used by the factory constructors
+of the Logger class. This function not only defines which logger should be used but also how it 
+is configured.
 
-```dart
-const like = 'sample';
+```dart 
+Logger.builder = (className) => ConsoleLogger(
+    className: className,
+    logLvl: LogLvl.error | LogLvl.warning,
+);
 ```
 
-## Additional information
+### Configure the Logger 
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+As you can see above you configure the Logger by defining the builder function. 
+This package defines four loggers but you can just write your own and use it in the builder
+definition.
+
+The ConsoleLogger can already be seen in the example above. The FileLogger can be used the following
+way:
+
+```dart 
+Logger.builder = (className) => FileLogger(
+    logDirectory: Directory("log/"),
+    logFileName: "log_file",
+    maxSize: KiBytes(500),
+    fileArchiveSize: 2,
+    logLvl: LogLvl.info | LogLvl.error | LogLvl.warning,
+    className: className,
+);
+```
+
+The log level can be configured using a bit mask. The following predefined values
+can be used and combined with bit operations in any way:
+
+```dart 
+LogLvl.trace;
+LogLvl.debug;
+LogLvl.info;
+LogLvl.warning;
+LogLvl.error;
+
+LogLvl.all;
+```
+
+If it is neccessary to combine multiple loggers you can use the MultiLogger.
+This way you can log to more than one target.
+
+```dart 
+Logger.builder = (className) => MultiLogger(
+    className: className,
+    logLvl: LogLvl.all,
+    loggers: [
+        ConsoleLogger.multi(),
+        FileLogger.multi(
+            logDirectory: Directory("log/"),
+            logFileName: "simple_log",
+            maxSize: const KiBytes(500),
+            fileArchiveSize: 5,
+        ),
+    ],
+);
+```
+
+### Instantiation
+
+There are to factory constructors that you can use to instantiate a logger instance. 
+One takes a String which should be the name of the class in that you want to use the logger.
+Of course you can use any string but it is meant to be a hint where the logging message was
+triggered.
+
+```dart 
+class SomeClass {
+    final _logger = Logger.create("SomeClass");
+}
+```
+
+A better option is to create a logger instance with the createByObject constructor. 
+It will use a string representation of the runtimetype from the object that is passed to it 
+as the className property.
+
+```dart 
+class SomeClass {
+    late final _logger = Logger.createByObject(this);
+}
+```
+
+<!-- ## Additional information -->
+
+<!-- TODO: Tell users more about the package: where to find more information, how to --> 
+<!-- contribute to the package, how to file issues, what response they can expect --> 
+<!-- from the package authors, and more. -->

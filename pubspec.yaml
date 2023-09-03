@@ -1,6 +1,6 @@
 name: simple_dart_logger
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
+description: A simple yet extensible logger package written purly in dart.
+version: 0.9.0
 # repository: https://github.com/my_org/my_repo
 
 environment:
