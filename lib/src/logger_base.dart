@@ -1,7 +1,14 @@
 import 'package:simple_dart_logger/src/log_lvl.dart';
 
+/// This abstract [Logger] provides an uniform interface for logging. It also
+/// defines the [log] function that has to be implemented by all loggers.
 abstract base class Logger {
+  /// Defines what messages should actually appear in the log target.
+  /// The predefined [LogLvl] can be used in any combination possible by using
+  /// bitwise operations.
   final int logLvl;
+
+  /// The name of the class that this [Logger] instance is used from.
   final String className;
 
   Logger({
@@ -11,13 +18,18 @@ abstract base class Logger {
 
   static Logger Function(String className) _builder = (className) => NoLogger();
 
-  static set builder(Logger Function(String className) builder) =>
-      _builder = builder;
+  /// Builder function used to define how to create the actual Logger instances.
+  static set builder(Logger Function(String className) builder) {
+    _builder = builder;
+  }
 
+  /// Creates a [Logger] instance and uses the String representation of the 
+  /// runtimeType of [object] as the [className].
   factory Logger.createByObject(dynamic object) {
     return _builder(object.runtimeType.toString());
   }
 
+  /// Creates a [Logger] instance.
   factory Logger.create(String className) {
     return _builder(className);
   }
@@ -41,7 +53,7 @@ abstract base class Logger {
   }
 
   void warning(String msg) {
-    if(_checkLogLvl(logLvl)) {
+    if (_checkLogLvl(logLvl)) {
       _log("warning", msg);
     }
   }

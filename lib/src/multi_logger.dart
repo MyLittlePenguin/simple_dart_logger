@@ -1,5 +1,9 @@
 import 'logger_base.dart';
 
+/// This [Logger] implementation doesn't actually write log messages anywhere.
+/// Instead it let's the actual logging be handled by any number of other loggers.
+/// It handles the [logLvl] and the [className] for all the [Logger] instances 
+/// inside [loggers].
 final class MultiLogger extends Logger {
   final Iterable<Logger> _loggers;
 

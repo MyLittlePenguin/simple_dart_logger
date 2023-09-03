@@ -63,10 +63,10 @@ way:
 
 ```dart 
 Logger.builder = (className) => FileLogger(
-    logDirectory: Directory("log/"),
-    logFileName: "log_file",
+    directory: Directory("log/"),
+    fileName: "log_file",
     maxSize: KiBytes(500),
-    fileArchiveSize: 2,
+    backups: 2,
     logLvl: LogLvl.info | LogLvl.error | LogLvl.warning,
     className: className,
 );
@@ -95,10 +95,10 @@ Logger.builder = (className) => MultiLogger(
     loggers: [
         ConsoleLogger.multi(),
         FileLogger.multi(
-            logDirectory: Directory("log/"),
-            logFileName: "simple_log",
+            directory: Directory("log/"),
+            fileName: "simple_log",
             maxSize: const KiBytes(500),
-            fileArchiveSize: 5,
+            backups: 5,
         ),
     ],
 );
