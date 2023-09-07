@@ -1,5 +1,13 @@
 import 'package:simple_dart_logger/src/log_lvl.dart';
 
+/// Formatter function that puts the log message String together.
+typedef Formatter = String Function(
+  DateTime timestamp,
+  String logLvl,
+  String className,
+  String msg,
+);
+
 /// This abstract [Logger] provides an uniform interface for logging. It also
 /// defines the [log] function that has to be implemented by all loggers.
 abstract base class Logger {
@@ -23,7 +31,21 @@ abstract base class Logger {
     _builder = builder;
   }
 
-  /// Creates a [Logger] instance and uses the String representation of the 
+  static Formatter _formatter = (timestamp, logLvl, className, msg) {
+    final tsStr = timestamp
+        .toLocal()
+        .toIso8601String()
+        .replaceFirst("T", " ")
+        .substring(0, 19);
+    return "$tsStr $logLvl ($className): $msg";
+  };
+
+  /// Formatter function that puts the log message String together.
+  static set formatter(Formatter fmt) {
+    _formatter = fmt;
+  }
+
+  /// Creates a [Logger] instance and uses the String representation of the
   /// runtimeType of [object] as the [className].
   factory Logger.createByObject(dynamic object) {
     return _builder(object.runtimeType.toString());
@@ -35,51 +57,51 @@ abstract base class Logger {
   }
 
   void trace(String msg) {
-    if (_checkLogLvl(logLvl)) {
-      _log("trace", msg);
+    if (_checkLogLvl(LogLvl.trace)) {
+      _log("TRACE", msg);
     }
   }
 
   void debug(String msg) {
-    if (_checkLogLvl(logLvl)) {
-      _log("debug", msg);
+    if (_checkLogLvl(LogLvl.debug)) {
+      _log("DEBUG", msg);
     }
   }
 
   void info(String msg) {
-    if (_checkLogLvl(logLvl)) {
-      _log("info", msg);
+    if (_checkLogLvl(LogLvl.info)) {
+      _log("INFO", msg);
     }
   }
 
   void warning(String msg) {
-    if (_checkLogLvl(logLvl)) {
-      _log("warning", msg);
+    if (_checkLogLvl(LogLvl.warning)) {
+      _log("WARNING", msg);
     }
   }
 
   void error(String msg) {
-    if (_checkLogLvl(logLvl)) {
-      _log("error", msg);
+    if (_checkLogLvl(LogLvl.error)) {
+      _log("ERROR", msg);
     }
   }
 
   void _log(String logLvl, String msg) {
-    var timestamp = DateTime.now()
-        .toLocal()
-        .toIso8601String()
-        .replaceFirst("T", " ")
-        .substring(0, 19);
-    log("$timestamp $logLvl ($className): $msg");
+    log(
+      _formatter(DateTime.now(), logLvl, className, msg),
+    );
   }
 
   bool _checkLogLvl(int logLvl) {
     return this.logLvl & logLvl == logLvl;
   }
 
+  /// This function handels what should happen with the resulting log message.
+  /// It is supposed to do the actual logging.
   void log(String msg);
 }
 
+/// This is a dummy Logger that doesn't log anything.
 final class NoLogger extends Logger {
   NoLogger() : super(logLvl: 0, className: "");
 

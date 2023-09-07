@@ -1,7 +1,7 @@
 name: simple_dart_logger
 description: A simple yet extensible logger package written purly in dart. 
   It is purposefully platform agnostic.
-version: 1.0.0
+version: 1.1.0
 repository: https://github.com/MyLittlePenguin/simple_dart_logger
 
 environment:

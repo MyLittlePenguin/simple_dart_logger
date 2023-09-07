@@ -65,11 +65,32 @@ way:
 Logger.builder = (className) => FileLogger(
     directory: Directory("log/"),
     fileName: "log_file",
-    maxSize: KiBytes(500),
+    maxSize: KBytes(500),
     backups: 2,
     logLvl: LogLvl.info | LogLvl.error | LogLvl.warning,
     className: className,
 );
+```
+__Important:__ If you want to use the FileLogger in a mobile project (Android/iOS),
+you should use the [path_provider](https://pub.dev/packages/path_provider) package to get a directory that you can use for 
+your log file.
+
+```dart
+import "package:path_provider/path_provider.dart";
+
+void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    final dir = await getApplicationDocumentsDirectory();
+
+    Logger.builder = (className) => FileLogger(
+        directory: dir,
+        fileName: "log_file",
+        maxSize: KBytes(500),
+        backups: 2,
+        logLvl: LogLvl.all ^ LogLvl.trace,
+        className: className,
+    );
+}
 ```
 
 The log level can be configured using a bit mask. The following predefined values
@@ -97,11 +118,18 @@ Logger.builder = (className) => MultiLogger(
         FileLogger.multi(
             directory: Directory("log/"),
             fileName: "simple_log",
-            maxSize: const KiBytes(500),
+            maxSize: const MBytes(500),
             backups: 5,
         ),
     ],
 );
+```
+
+It is also possible to change the formatting of your messages.
+
+```dart 
+Logger.formatter =
+    (timestamp, logLvl, className, msg) => "[$logLvl] ($className) {$msg}";
 ```
 
 ### Instantiation
@@ -124,6 +152,34 @@ as the className property.
 ```dart 
 class SomeClass {
     late final _logger = Logger.createByObject(this);
+}
+```
+
+### Create custom logger
+
+If you want to create your own custom Logger that's very easy. You create your 
+own class that extends the abstract Logger and implement the log function.
+
+```dart 
+final class DebugPrintLogger extends Logger {
+  PrintLogger({
+    super.logLvl,
+    required super.className,
+  });
+
+  @override
+  void log(String msg) {
+    debugPrint(msg);
+  }
+}
+
+void main() {
+  Logger.builder = (className) => DebugPrintLogger(
+     logLvl: LogLvl.all,
+      className: className,
+    );
+  final logger = Logger.create("SomeName");    
+  logger.debug("some message");
 }
 ```
 
