@@ -48,7 +48,6 @@ is configured.
 ```dart 
 Logger.builder = (className) => ConsoleLogger(
     className: className,
-    logLvl: LogLvl.error | LogLvl.warning,
 );
 ```
 
@@ -58,7 +57,18 @@ As you can see above you configure the Logger by defining the builder function.
 This package defines four loggers but you can just write your own and use it in the builder
 definition.
 
-The ConsoleLogger can already be seen in the example above. The FileLogger can be used the following
+The ConsoleLogger can already be seen in the example above. 
+Still here is a more complete example with all the default options:
+
+```dart
+Logger.builder = (className) => ConsoleLogger(
+    className: className,
+    colorized: false, //makes errors appear read and warnings appear yellow if the Terminal supports it
+    logLvl: LogLvl.all,
+);
+```
+
+The FileLogger can be used the following
 way:
 
 ```dart 
