@@ -9,3 +9,7 @@
 - added formatter function
 - added tests
 - improved documentation
+
+## 1.2.0
+
+- added support for colorized console logging
