@@ -1,3 +1,5 @@
+import 'package:simple_dart_logger/src/log_lvl.dart';
+
 import 'logger_base.dart';
 
 /// This [Logger] implementation writes the log messages with a simple print
@@ -24,25 +26,54 @@ final class ConsoleLogger extends Logger {
   /// This constructor lacks the very important [logLvl] and [className]
   /// properties. __Only use this constructor in combination with a
   /// [MultiLogger]!__
-  factory ConsoleLogger.multi() => ConsoleLogger(className: "");
+  factory ConsoleLogger.multi([bool colorize = false]) => ConsoleLogger(
+        className: "",
+        colorize: colorize,
+      );
 
   @override
   void error(String msg) {
-    logColored(msg, TermColor.red);
+    if(!colorize) {
+      super.error(msg);
+      return;
+    }
+    if (checkLogLvl(LogLvl.warning)) {
+      log(
+        TermColor.red.colorize(
+          Logger.formatter(
+            DateTime.now(),
+            "ERROR",
+            className,
+            msg,
+          ),
+        ),
+      );
+    }
   }
 
   @override
   void warning(String msg) {
-    logColored(msg, TermColor.yellow);
+    if(!colorize) {
+      super.warning(msg);
+      return;
+    }
+    if (checkLogLvl(LogLvl.warning)) {
+      log(
+        TermColor.yellow.colorize(
+          Logger.formatter(
+            DateTime.now(),
+            "WARNING",
+            className,
+            msg,
+          ),
+        ),
+      );
+    }
   }
 
   @override
   void log(String msg) {
     print(msg);
-  }
-
-  void logColored(String msg, TermColor color) {
-    log("$color$msg${TermColor.reset}");
   }
 }
 
@@ -68,4 +99,6 @@ final class TermColor {
   String toString() {
     return "$_magic[${value}m";
   }
+
+  String colorize(String msg) => "$this$msg${TermColor.reset}";
 }

@@ -13,3 +13,7 @@
 ## 1.2.0
 
 - added support for colorized console logging
+
+## 1.2.1
+
+- BUGFIX fixed issue with newly added colorize feature

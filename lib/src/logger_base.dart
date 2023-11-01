@@ -31,7 +31,7 @@ abstract base class Logger {
     _builder = builder;
   }
 
-  static Formatter _formatter = (timestamp, logLvl, className, msg) {
+  static Formatter formatter = (timestamp, logLvl, className, msg) {
     final tsStr = timestamp
         .toLocal()
         .toIso8601String()
@@ -39,11 +39,6 @@ abstract base class Logger {
         .substring(0, 19);
     return "$tsStr $logLvl ($className): $msg";
   };
-
-  /// Formatter function that puts the log message String together.
-  static set formatter(Formatter fmt) {
-    _formatter = fmt;
-  }
 
   /// Creates a [Logger] instance and uses the String representation of the
   /// runtimeType of [object] as the [className].
@@ -57,42 +52,42 @@ abstract base class Logger {
   }
 
   void trace(String msg) {
-    if (_checkLogLvl(LogLvl.trace)) {
+    if (checkLogLvl(LogLvl.trace)) {
       _log("TRACE", msg);
     }
   }
 
   void debug(String msg) {
-    if (_checkLogLvl(LogLvl.debug)) {
+    if (checkLogLvl(LogLvl.debug)) {
       _log("DEBUG", msg);
     }
   }
 
   void info(String msg) {
-    if (_checkLogLvl(LogLvl.info)) {
+    if (checkLogLvl(LogLvl.info)) {
       _log("INFO", msg);
     }
   }
 
   void warning(String msg) {
-    if (_checkLogLvl(LogLvl.warning)) {
+    if (checkLogLvl(LogLvl.warning)) {
       _log("WARNING", msg);
     }
   }
 
   void error(String msg) {
-    if (_checkLogLvl(LogLvl.error)) {
+    if (checkLogLvl(LogLvl.error)) {
       _log("ERROR", msg);
     }
   }
 
   void _log(String logLvl, String msg) {
     log(
-      _formatter(DateTime.now(), logLvl, className, msg),
+      formatter(DateTime.now(), logLvl, className, msg),
     );
   }
 
-  bool _checkLogLvl(int logLvl) {
+  bool checkLogLvl(int logLvl) {
     return this.logLvl & logLvl == logLvl;
   }
 
