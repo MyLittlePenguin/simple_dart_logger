@@ -63,7 +63,18 @@ Still here is a more complete example with all the default options:
 ```dart
 Logger.builder = (className) => ConsoleLogger(
     className: className,
-    colorized: false, //makes errors appear read and warnings appear yellow if the Terminal supports it
+    colorized: false,
+    logLvl: LogLvl.all,
+);
+```
+
+If you want your errors to be red and your warnings to be yellow you can set
+the colorized flag to true. It won't affect anything else.
+
+```dart
+Logger.builder = (className) => ConsoleLogger(
+    className: className,
+    colorized: true,
     logLvl: LogLvl.all,
 );
 ```
@@ -71,7 +82,7 @@ Logger.builder = (className) => ConsoleLogger(
 The FileLogger can be used the following
 way:
 
-```dart 
+```dart
 Logger.builder = (className) => FileLogger(
     directory: Directory("log/"),
     fileName: "log_file",
@@ -82,7 +93,7 @@ Logger.builder = (className) => FileLogger(
 );
 ```
 __Important:__ If you want to use the FileLogger in a mobile project (Android/iOS),
-you should use the [path_provider](https://pub.dev/packages/path_provider) package to get a directory that you can use for 
+you should use the [path_provider](https://pub.dev/packages/path_provider) package to get a directory that you can use for
 your log file.
 
 ```dart
@@ -106,7 +117,7 @@ void main() async {
 The log level can be configured using a bit mask. The following predefined values
 can be used and combined with bit operations in any way:
 
-```dart 
+```dart
 LogLvl.trace;
 LogLvl.debug;
 LogLvl.info;
@@ -119,7 +130,7 @@ LogLvl.all;
 If it is neccessary to combine multiple loggers you can use the MultiLogger.
 This way you can log to more than one target.
 
-```dart 
+```dart
 Logger.builder = (className) => MultiLogger(
     className: className,
     logLvl: LogLvl.all,
@@ -137,25 +148,25 @@ Logger.builder = (className) => MultiLogger(
 
 It is also possible to change the formatting of your messages.
 
-```dart 
+```dart
 Logger.formatter =
     (timestamp, logLvl, className, msg) => "[$logLvl] ($className) {$msg}";
 ```
 
 ### Instantiation
 
-There are to factory constructors that you can use to instantiate a logger instance. 
+There are to factory constructors that you can use to instantiate a logger instance.
 One takes a String which should be the name of the class in that you want to use the logger.
 Of course you can use any string but it is meant to be a hint where the logging message was
 triggered.
 
-```dart 
+```dart
 class SomeClass {
     final _logger = Logger.create("SomeClass");
 }
 ```
 
-A better option is to create a logger instance with the createByObject constructor. 
+A better option is to create a logger instance with the createByObject constructor.
 It will use a string representation of the runtimetype from the object that is passed to it 
 as the className property.
 

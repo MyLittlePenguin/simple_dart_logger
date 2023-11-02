@@ -6,3 +6,4 @@ export 'src/multi_logger.dart';
 export 'src/console_logger.dart';
 export 'src/logger_base.dart';
 export 'src/log_lvl.dart';
+export 'src/term_color.dart';
