@@ -14,9 +14,14 @@ final class MultiLogger extends Logger {
   }) : _loggers = loggers;
 
   @override
-  void log(String msg) {
+  void processLogMessage(String className, String logLvl, String msg) {
     for (var logger in _loggers) {
-      logger.log(msg);
+      logger.processLogMessage(this.className, logLvl, msg);
     }
+  }
+
+  @override
+  void log(String msg) {
+    throw UnimplementedError();
   }
 }

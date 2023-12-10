@@ -79,6 +79,22 @@ Logger.builder = (className) => ConsoleLogger(
 );
 ```
 
+You even can configure the colors used to print the messages:
+
+```dart
+Logger.builder = (className) => ConsoleLogger(
+    className: className,
+    colorized: true,
+    colors: (
+        trace: TermColor.reset,
+        debug: TermColor.reset,
+        info: TermColor.green,
+        warning: TermColor.yellow,
+        error: TermColor.red,
+    ),
+);
+```
+
 The FileLogger can be used the following
 way:
 

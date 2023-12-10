@@ -53,35 +53,36 @@ abstract base class Logger {
 
   void trace(String msg) {
     if (checkLogLvl(LogLvl.trace)) {
-      _log("TRACE", msg);
+      processLogMessage(className, "TRACE", msg);
     }
   }
 
   void debug(String msg) {
     if (checkLogLvl(LogLvl.debug)) {
-      _log("DEBUG", msg);
+      processLogMessage(className, "DEBUG", msg);
     }
   }
 
   void info(String msg) {
     if (checkLogLvl(LogLvl.info)) {
-      _log("INFO", msg);
+      processLogMessage(className, "INFO", msg);
     }
   }
 
   void warning(String msg) {
     if (checkLogLvl(LogLvl.warning)) {
-      _log("WARNING", msg);
+      processLogMessage(className, "WARNING", msg);
     }
   }
 
   void error(String msg) {
     if (checkLogLvl(LogLvl.error)) {
-      _log("ERROR", msg);
+      processLogMessage(className, "ERROR", msg);
     }
   }
 
-  void _log(String logLvl, String msg) {
+  /// This function prepares the message for logging and passes it to the log function.
+  void processLogMessage(String className, String logLvl, String msg) {
     log(
       formatter(DateTime.now(), logLvl, className, msg),
     );
